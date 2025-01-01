@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>VDT.Core.Tryable</PackageId>
+		<Version>0.1.0</Version>
+		<Title>VDT.Core.Tryable</Title>
+		<PackageIcon>icon_128.png</PackageIcon>
+		<Description> Functional try/catch/finally with options for default values based on exception types and filters </Description>
+		<Authors>Maikel Bos</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>Copyright © 2025 Maikel Bos</Copyright>
+		<PackageTags>TODO</PackageTags>
+		<PackageProjectUrl>https://github.com/maikelbos0/VDT.Core.Tryable</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" pack="true" PackagePath="." />
+		<None Include="icon_128.png" pack="true" PackagePath="." />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
+	</ItemGroup>
+
+</Project>
