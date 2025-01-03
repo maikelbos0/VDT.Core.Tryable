@@ -17,10 +17,10 @@ public class TryableTests {
     [Fact]
     public void UsesDefaultErrorHandlerOnErrorWithoutErrorHandlers() {
         var exception = new Exception();
-        var subject = new Tryable<int>(() => throw exception, ex => {
-            Assert.Equal(exception, ex);
-            return 10;
-        });
+        var defaultErrorHandler = Substitute.For<Func<Exception, int>>();
+        defaultErrorHandler.Invoke(exception).Returns(10);
+
+        var subject = new Tryable<int>(() => throw exception, defaultErrorHandler);
 
         var result = subject.Resolve();
 
