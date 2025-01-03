@@ -7,11 +7,14 @@ namespace VDT.Core.Tryable.Tests;
 public class TryableTests {
     [Fact]
     public void ReturnsFunctionValueOnSuccess() {
-        var subject = new Tryable<int>(() => 5, ex => 10);
+        var defaultErrorHandler = Substitute.For<Func<Exception, int>>();
+        var subject = new Tryable<int>(() => 5, defaultErrorHandler);
 
         var result = subject.Resolve();
 
         Assert.Equal(5, result);
+
+        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
     }
 
     [Fact]
