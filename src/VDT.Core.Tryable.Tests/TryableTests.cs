@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NSubstitute;
+using System;
 using Xunit;
 
 namespace VDT.Core.Tryable.Tests;
@@ -24,5 +25,31 @@ public class TryableTests {
         var result = subject.Resolve();
 
         Assert.Equal(10, result);
+    }
+
+    [Fact]
+    public void ExecutesCompleteHandlerOnSucces() {
+        var completeHandler = Substitute.For<Action>();
+        
+        var subject = new Tryable<int>(() => 5, ex => 10) {
+            CompleteHandler = completeHandler
+        };
+
+        subject.Resolve();
+
+        completeHandler.Received().Invoke();
+    }
+
+    [Fact]
+    public void ExecutesCompleteHandlerOnError() {
+        var completeHandler = Substitute.For<Action>();
+
+        var subject = new Tryable<int>(() => throw new Exception(), ex => 10) {
+            CompleteHandler = completeHandler
+        };
+
+        subject.Resolve();
+
+        completeHandler.Received().Invoke();
     }
 }

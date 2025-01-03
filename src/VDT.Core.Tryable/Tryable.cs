@@ -5,7 +5,8 @@ namespace VDT.Core.Tryable;
 public class Tryable<TValue> {
     public Func<TValue> Function { get; set; }
     public Func<Exception, TValue> DefaultErrorHandler { get; set; }
-    
+    public Action? CompleteHandler { get; set; }
+
     public Tryable(Func<TValue> function, Func<Exception, TValue> defaultErrorHandler) {
         Function = function;
         DefaultErrorHandler = defaultErrorHandler;
@@ -17,6 +18,11 @@ public class Tryable<TValue> {
         }
         catch (Exception ex) {
             return DefaultErrorHandler(ex);
+        }
+        finally {
+            if (CompleteHandler != null) {
+                CompleteHandler();
+            }
         }
     }
 }
