@@ -20,9 +20,7 @@ public class Tryable<TValue> {
             return DefaultErrorHandler(ex);
         }
         finally {
-            if (CompleteHandler != null) {
-                CompleteHandler();
-            }
+            CompleteHandler?.Invoke();
         }
     }
 }

@@ -7,10 +7,14 @@
 		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<NoWarn>1701;1702;IDE0290</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="coverlet.msbuild" Version="6.0.2">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
 		<PackageReference Include="NSubstitute" Version="5.1.0" />

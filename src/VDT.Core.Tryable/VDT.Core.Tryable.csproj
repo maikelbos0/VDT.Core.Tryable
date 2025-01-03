@@ -6,6 +6,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<NoWarn>1701;1702;IDE0290</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<PackageId>VDT.Core.Tryable</PackageId>
 		<Version>0.1.0</Version>
 		<Title>VDT.Core.Tryable</Title>
