@@ -32,7 +32,6 @@
 	<ItemGroup>
 		<None Include="README.md" pack="true" PackagePath="." />
 		<None Include="icon_128.png" pack="true" PackagePath="." />
-		<None Include="..\VDT.Core.Tryable.Generators\bin\$(Configuration)\netstandard2.0\VDT.Core.Tryable.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 	<ItemGroup>
