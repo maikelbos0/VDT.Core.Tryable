@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\VDT.Core.Tryable\VDT.Core.Tryable.csproj" />
+		<ProjectReference Include="..\VDT.Core.Tryable.Generators\VDT.Core.Tryable.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 </Project>
