@@ -15,7 +15,7 @@
 		<Version>0.1.0</Version>
 		<Title>VDT.Core.Tryable</Title>
 		<PackageIcon>icon_128.png</PackageIcon>
-		<Description> Functional try/catch/finally with options for default values based on exception types and filters </Description>
+		<Description>Functional try/catch/finally with options for default values based on exception types and filters</Description>
 		<Authors>Maikel Bos</Authors>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>Copyright © 2025 Maikel Bos</Copyright>
