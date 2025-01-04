@@ -2,7 +2,7 @@
 
 namespace VDT.Core.Tryable;
 
-public class ErrorHandler<TException, TValue> where TException : Exception {
+public class ErrorHandler<TException, TValue> : IErrorHandler<TValue> where TException : Exception {
     public Func<TException, TValue> Function { get; set; }
     public Func<TException, bool>? Filter { get; set; }
 
