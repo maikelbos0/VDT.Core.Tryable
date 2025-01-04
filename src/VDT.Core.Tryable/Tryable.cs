@@ -13,7 +13,7 @@ public class Tryable<TValue> {
         Function = function;
     }
 
-    public TValue? Resolve() {
+    public TValue Resolve() {
         try {
             return Function();
         }
