@@ -27,6 +27,57 @@ public class TryableTests {
 
         Assert.Throws<Exception>(() => subject.Resolve());
     }
+
+    [Fact]
+    public void ThrowsOnErrorWithoutMatchingErrorHandlers() {
+        var skippedErrorHandler = Substitute.For<IErrorHandler<int>>();
+        skippedErrorHandler.Handle(Arg.Any<Exception>()).Returns(new ErrorHandlerResult<int>(false, default));
+        var subject = new Tryable<int>(() => throw new Exception()) {
+            ErrorHandlers = {
+                skippedErrorHandler
+            }
+        };
+
+        Assert.Throws<Exception>(() => subject.Resolve());
+    }
+
+    [Fact]
+    public void UsesDefaultErrorHandlerOnErrorWithoutErrorHandlers() {
+        var defaultErrorHandler = Substitute.For<Func<int>>();
+        defaultErrorHandler.Invoke().Returns(10);
+
+        var subject = new Tryable<int>(() => throw new Exception()) {
+            DefaultErrorHandler = defaultErrorHandler
+        };
+
+        var result = subject.Resolve();
+
+        Assert.Equal(10, result);
+    }
+
+    [Fact]
+    public void UsesDefaultErrorHandlerOnErrorWithoutMatchingErrorHandlers() {
+        var exception = new Exception();
+        var skippedErrorHandler = Substitute.For<IErrorHandler<int>>();
+        skippedErrorHandler.Handle(exception).Returns(new ErrorHandlerResult<int>(false, default));
+        var defaultErrorHandler = Substitute.For<Func<int>>();
+        defaultErrorHandler.Invoke().Returns(10);
+
+        var subject = new Tryable<int>(() => throw exception) {
+            ErrorHandlers = {
+                skippedErrorHandler
+            },
+            DefaultErrorHandler = defaultErrorHandler
+        };
+
+        var result = subject.Resolve();
+
+        Assert.Equal(10, result);
+
+        skippedErrorHandler.Received().Handle(exception);
+        defaultErrorHandler.Received().Invoke();
+    }
+
     [Fact]
     public void UsesFirstErrorHandlerThatReturnsHandledResultOnError() {
         var exception = new Exception();
