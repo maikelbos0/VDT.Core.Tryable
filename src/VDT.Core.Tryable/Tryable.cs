@@ -6,12 +6,11 @@ namespace VDT.Core.Tryable;
 public class Tryable<TValue> {
     public Func<TValue> Function { get; set; }
     public IList<IErrorHandler<TValue>> ErrorHandlers { get; set; } = new List<IErrorHandler<TValue>>();
-    public Func<Exception, TValue> DefaultErrorHandler { get; set; }
+    public Func<TValue>? DefaultErrorHandler { get; set; }
     public Action? CompleteHandler { get; set; }
 
-    public Tryable(Func<TValue> function, Func<Exception, TValue> defaultErrorHandler) {
+    public Tryable(Func<TValue> function) {
         Function = function;
-        DefaultErrorHandler = defaultErrorHandler;
     }
 
     public TValue? Resolve() {
@@ -27,7 +26,11 @@ public class Tryable<TValue> {
                 }
             }
 
-            return DefaultErrorHandler(ex);
+            if (DefaultErrorHandler != null) {
+                return DefaultErrorHandler();
+            }
+
+            throw;
         }
         finally {
             CompleteHandler?.Invoke();
