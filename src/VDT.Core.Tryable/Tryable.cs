@@ -5,7 +5,7 @@ namespace VDT.Core.Tryable;
 
 public class Tryable<TValue> {
     public Func<TValue> Function { get; set; }
-    public IList<IErrorHandler<TValue>> ErrorHandlers { get; set; } = new List<IErrorHandler<TValue>>();
+    public IList<IErrorHandler<TValue>> ErrorHandlers { get; set; } = [];
     public Func<TValue>? DefaultErrorHandler { get; set; }
     public Action? CompleteHandler { get; set; }
 
