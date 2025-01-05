@@ -34,8 +34,4 @@
 		<None Include="icon_128.png" pack="true" PackagePath="." />
 	</ItemGroup>
 
-	<ItemGroup>
-		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
-	</ItemGroup>
-
 </Project>
