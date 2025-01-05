@@ -13,7 +13,7 @@ public class TryableTests {
         defaultErrorHandler.Invoke().Returns(10);
         var subject = new Tryable<int>(() => 5);
 
-        var result = subject.Resolve();
+        var result = (int)subject;
 
         Assert.Equal(5, result);
 
@@ -25,7 +25,7 @@ public class TryableTests {
     public void ThrowsOnErrorWithoutErrorHandlers() {
         var subject = new Tryable<int>(() => throw new Exception());
 
-        Assert.Throws<Exception>(() => subject.Resolve());
+        Assert.Throws<Exception>(() => (int)subject);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class TryableTests {
             }
         };
 
-        Assert.Throws<Exception>(() => subject.Resolve());
+        Assert.Throws<Exception>(() => (int)subject);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Resolve();
+        var result = (int)subject;
 
         Assert.Equal(10, result);
     }
@@ -70,7 +70,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Resolve();
+        var result = (int)subject;
 
         Assert.Equal(10, result);
 
@@ -98,7 +98,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Resolve();
+        var result = (int)subject;
 
         Assert.Equal(7, result);
 
@@ -116,7 +116,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        subject.Resolve();
+        var result = (int)subject;
 
         completeHandler.Received().Invoke();
     }
@@ -129,7 +129,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        Assert.Throws<Exception>(() => subject.Resolve());
+        Assert.Throws<Exception>(() => (int)subject);
 
         completeHandler.Received().Invoke();
     }
