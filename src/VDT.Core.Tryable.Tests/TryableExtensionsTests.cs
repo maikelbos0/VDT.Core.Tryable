@@ -51,4 +51,14 @@ public class TryableExtensionsTests {
 
         Assert.Equal(defaultErrorHandler, subject.DefaultErrorHandler);
     }
+
+    [Fact]
+    public void Finally() {
+        var completeHandler = Substitute.For<Action>();
+        var subject = new Tryable<int>(() => 5);
+
+        Assert.Equal(subject, subject.Finally(completeHandler));
+
+        Assert.Equal(completeHandler, subject.CompleteHandler);
+    }
 }

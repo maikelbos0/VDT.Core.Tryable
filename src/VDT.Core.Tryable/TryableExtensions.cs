@@ -17,4 +17,9 @@ public static class TryableExtensions {
         tryable.DefaultErrorHandler = defaultErrorHandler;
         return tryable;
     }
+
+    public static Tryable<TValue> Finally<TValue>(this Tryable<TValue> tryable, Action completeHandler) {
+        tryable.CompleteHandler = completeHandler;
+        return tryable;
+    }
 }
