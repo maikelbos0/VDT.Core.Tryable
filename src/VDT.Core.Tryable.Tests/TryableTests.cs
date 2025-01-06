@@ -70,7 +70,7 @@ public class TryableTests {
         defaultErrorHandler.Invoke().Returns(10);
         var subject = new Tryable<int>(() => 5);
 
-        var result = (int)subject;
+        int result = subject;
 
         Assert.Equal(5, result);
 
@@ -107,7 +107,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = (int)subject;
+        int result = subject;
 
         Assert.Equal(10, result);
     }
@@ -127,7 +127,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = (int)subject;
+        int result = subject;
 
         Assert.Equal(10, result);
 
@@ -155,7 +155,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = (int)subject;
+        int result = subject;
 
         Assert.Equal(7, result);
 
@@ -173,7 +173,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        var result = (int)subject;
+        int result = subject;
 
         completeHandler.Received().Invoke();
     }
