@@ -15,6 +15,26 @@ public class Tryable<TValue> {
         Function = function;
     }
 
+    public Tryable<TValue> Catch<TException>(Func<TException, TValue> handler) where TException : Exception {
+        ErrorHandlers.Add(new ErrorHandler<TException, TValue>(handler));
+        return this;
+    }
+
+    public Tryable<TValue> Catch<TException>(Func<TException, bool> filter, Func<TException, TValue> handler) where TException : Exception {
+        ErrorHandlers.Add(new ErrorHandler<TException, TValue>(filter, handler));
+        return this;
+    }
+
+    public Tryable<TValue> Catch(Func<TValue> defaultErrorHandler) {
+        DefaultErrorHandler = defaultErrorHandler;
+        return this;
+    }
+
+    public Tryable<TValue> Finally(Action completeHandler) {
+        CompleteHandler = completeHandler;
+        return this;
+    }
+
     public TValue Execute() {
         try {
             return Function();
