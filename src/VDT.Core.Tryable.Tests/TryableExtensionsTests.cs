@@ -33,7 +33,7 @@ public class TryableExtensionsTests {
             }
         };
 
-        Assert.Equal(subject, subject.Catch(handler, filter));
+        Assert.Equal(subject, subject.Catch(filter, handler));
 
         Assert.Equal(2, subject.ErrorHandlers.Count);
 

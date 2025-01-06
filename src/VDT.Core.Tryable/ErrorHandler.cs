@@ -6,11 +6,11 @@ public class ErrorHandler<TException, TValue> : IErrorHandler<TValue> where TExc
     public Func<TException, TValue> Handler { get; set; }
     public Func<TException, bool>? Filter { get; set; }
 
-    public ErrorHandler(Func<TException, TValue> handler) : this(handler, null) { }
+    public ErrorHandler(Func<TException, TValue> handler) : this(null, handler) { }
 
-    public ErrorHandler(Func<TException, TValue> handler, Func<TException, bool>? filter) {
-        Handler = handler;
+    public ErrorHandler(Func<TException, bool>? filter, Func<TException, TValue> handler) {
         Filter = filter;
+        Handler = handler;
     }
 
     public ErrorHandlerResult<TValue> Handle(Exception ex) {

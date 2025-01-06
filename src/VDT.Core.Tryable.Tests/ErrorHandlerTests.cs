@@ -16,7 +16,7 @@ public class ErrorHandlerTests {
 
     [Fact]
     public void DoesNotHandleWhenFilterReturnsFalse() {
-        var subject = new ErrorHandler<Exception, int>(ex => 10, ex => false);
+        var subject = new ErrorHandler<Exception, int>(ex => false, ex => 10);
 
         var result = subject.Handle(new Exception());
 
@@ -36,7 +36,7 @@ public class ErrorHandlerTests {
 
     [Fact]
     public void HandlesCorrectExceptionTypeWhenFilterReturnsTrue() {
-        var subject = new ErrorHandler<Exception, int>(ex => 10, ex => true);
+        var subject = new ErrorHandler<Exception, int>(ex => true, ex => 10);
 
         var result = subject.Handle(new Exception());
 
