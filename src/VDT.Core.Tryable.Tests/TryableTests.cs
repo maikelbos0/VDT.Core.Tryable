@@ -68,7 +68,12 @@ public class TryableTests {
         errorHandler.Handle(Arg.Any<Exception>()).Returns(new ErrorHandlerResult<int>(true, 7));
         var defaultErrorHandler = Substitute.For<Func<int>>();
         defaultErrorHandler.Invoke().Returns(10);
-        var subject = new Tryable<int>(() => 5);
+        var subject = new Tryable<int>(() => 5) {
+            ErrorHandlers = {
+                errorHandler
+            },
+            DefaultErrorHandler = defaultErrorHandler
+        };
 
         int result = subject;
 
