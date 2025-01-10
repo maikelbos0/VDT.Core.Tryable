@@ -35,7 +35,7 @@ public class Tryable<TValue> {
         return this;
     }
 
-    public TValue Execute() {
+    public virtual TValue Execute() {
         try {
             return Function();
         }
