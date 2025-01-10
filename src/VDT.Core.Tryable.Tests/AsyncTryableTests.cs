@@ -19,7 +19,7 @@ public class AsyncTryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = await subject.Execute();
+        var result = await subject;
 
         Assert.Equal(5, result);
 
@@ -31,7 +31,7 @@ public class AsyncTryableTests {
     public async Task ThrowsOnErrorWithoutErrorHandlers() {
         var subject = new AsyncTryable<int>(() => throw new Exception());
 
-        await Assert.ThrowsAsync<Exception>(subject.Execute);
+        await Assert.ThrowsAsync<Exception>(async () => await subject);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class AsyncTryableTests {
             }
         };
 
-        await Assert.ThrowsAsync<Exception>(subject.Execute);
+        await Assert.ThrowsAsync<Exception>(async () => await subject);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class AsyncTryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = await subject.Execute();
+        var result = await subject;
 
         Assert.Equal(10, result);
     }
@@ -76,7 +76,7 @@ public class AsyncTryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = await subject.Execute();
+        var result = await subject;
 
         Assert.Equal(10, result);
 
@@ -104,7 +104,7 @@ public class AsyncTryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = await subject.Execute();
+        var result = await subject;
 
         Assert.Equal(7, result);
 
@@ -122,7 +122,7 @@ public class AsyncTryableTests {
             CompleteHandler = completeHandler
         };
 
-        var result = await subject.Execute();
+        var result = await subject;
 
         completeHandler.Received().Invoke();
     }
@@ -135,7 +135,7 @@ public class AsyncTryableTests {
             CompleteHandler = completeHandler
         };
 
-        await Assert.ThrowsAsync<Exception>(subject.Execute);
+        await Assert.ThrowsAsync<Exception>(async () => await subject);
 
         completeHandler.Received().Invoke();
     }

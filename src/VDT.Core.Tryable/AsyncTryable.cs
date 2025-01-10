@@ -30,4 +30,6 @@ public class AsyncTryable<TValue> : Tryable<Task<TValue>> {
             CompleteHandler?.Invoke();
         }
     }
+
+    public TaskAwaiter<TValue> GetAwaiter() => Execute().GetAwaiter();
 }
