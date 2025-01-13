@@ -116,7 +116,7 @@ public class AsyncTryableTests {
 
     [Fact]
     public async Task ExecutesCompleteHandlerOnSucces() {
-        var completeHandler = Substitute.For<Action>();
+        var completeHandler = Substitute.For<Func<Task>>();
 
         var subject = new AsyncTryable<int>(() => Task.FromResult(5)) {
             CompleteHandler = completeHandler
@@ -124,12 +124,12 @@ public class AsyncTryableTests {
 
         var result = await subject;
 
-        completeHandler.Received().Invoke();
+        await completeHandler.Received().Invoke();
     }
 
     [Fact]
     public async Task ExecutesCompleteHandlerOnError() {
-        var completeHandler = Substitute.For<Action>();
+        var completeHandler = Substitute.For<Func<Task>>();
 
         var subject = new AsyncTryable<int>(() => throw new Exception()) {
             CompleteHandler = completeHandler
@@ -137,6 +137,6 @@ public class AsyncTryableTests {
 
         await Assert.ThrowsAsync<Exception>(async () => await subject);
 
-        completeHandler.Received().Invoke();
+        await completeHandler.Received().Invoke();
     }
 }
