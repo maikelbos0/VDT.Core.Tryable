@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace VDT.Core.Tryable;
 
-public class Tryable<TValue> {
+public class Tryable<TValue> : TryableBase<TValue, Action> {
     public static implicit operator TValue(Tryable<TValue> tryable) => tryable.Execute();
 
-    public Func<TValue> Function { get; set; }
-    public IList<IErrorHandler<TValue>> ErrorHandlers { get; set; } = [];
-    public Func<TValue>? DefaultErrorHandler { get; set; }
-    public Action? CompleteHandler { get; set; }
-
-    public Tryable(Func<TValue> function) {
+    public Tryable(Func<TValue> function) : base(function) {
         Function = function;
     }
 
@@ -35,7 +29,7 @@ public class Tryable<TValue> {
         return this;
     }
 
-    public virtual TValue Execute() {
+    public override TValue Execute() {
         try {
             return Function();
         }
