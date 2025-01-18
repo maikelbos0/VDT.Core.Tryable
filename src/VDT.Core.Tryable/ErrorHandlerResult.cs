@@ -2,8 +2,8 @@
 
 namespace VDT.Core.Tryable;
 
-public record ErrorHandlerResult<TValue> ([property:MemberNotNullWhen(true, nameof(ErrorHandlerResult<TValue>.Value))] bool IsHandled, TValue? Value) {
-    public static ErrorHandlerResult<TValue> Skipped => new(false, default);
+public record ErrorHandlerResult<TOut> ([property:MemberNotNullWhen(true, nameof(ErrorHandlerResult<TOut>.Value))] bool IsHandled, TOut? Value) {
+    public static ErrorHandlerResult<TOut> Skipped => new(false, default);
 
-    public static ErrorHandlerResult<TValue> Handled(TValue value) => new(true, value);
+    public static ErrorHandlerResult<TOut> Handled(TOut value) => new(true, value);
 };

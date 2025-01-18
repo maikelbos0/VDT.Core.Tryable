@@ -2,10 +2,10 @@
 
 namespace VDT.Core.Tryable;
 
-public class Tryable<TValue> : TryableBase<TValue, Action> {
-    public Tryable(Func<TValue> function) : base(function) { }
+public class Tryable<TOut> : TryableBase<Void, TOut, Action> {
+    public Tryable(Func<TOut> function) : base(function) { }
 
-    public override TValue Execute() {
+    public override TOut Execute() {
         try {
             return Function();
         }

@@ -2,26 +2,26 @@
 
 namespace VDT.Core.Tryable;
 
-public class ErrorHandler<TException, TValue> : IErrorHandler<TValue> where TException : Exception {
-    public Func<TException, TValue> Handler { get; set; }
+public class ErrorHandler<TException, TOut> : IErrorHandler<TOut> where TException : Exception {
+    public Func<TException, TOut> Handler { get; set; }
     public Func<TException, bool>? Filter { get; set; }
 
-    public ErrorHandler(Func<TException, TValue> handler) : this(null, handler) { }
+    public ErrorHandler(Func<TException, TOut> handler) : this(null, handler) { }
 
-    public ErrorHandler(Func<TException, bool>? filter, Func<TException, TValue> handler) {
+    public ErrorHandler(Func<TException, bool>? filter, Func<TException, TOut> handler) {
         Filter = filter;
         Handler = handler;
     }
 
-    public ErrorHandlerResult<TValue> Handle(Exception ex) {
+    public ErrorHandlerResult<TOut> Handle(Exception ex) {
         if (ex is not TException exception) {
-            return ErrorHandlerResult<TValue>.Skipped;
+            return ErrorHandlerResult<TOut>.Skipped;
         }
 
         if (Filter != null && !Filter(exception)) {
-            return ErrorHandlerResult<TValue>.Skipped;
+            return ErrorHandlerResult<TOut>.Skipped;
         }
 
-        return ErrorHandlerResult<TValue>.Handled(Handler(exception));
+        return ErrorHandlerResult<TOut>.Handled(Handler(exception));
     }
 }
