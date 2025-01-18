@@ -15,17 +15,11 @@ public class IntegrationTests {
         checked {
             var isComplete = false;
 
-            double result = Try(() => (double)(numerator / denominator * multiplier))
+            var result = Try(() => (double)(numerator / denominator * multiplier))
                 .Catch<DivideByZeroException>(ex => numerator < 0, ex => double.NegativeInfinity)
                 .Catch<DivideByZeroException>(ex => double.PositiveInfinity)
                 .Catch(() => double.NaN)
-                .Finally(() => isComplete = true);
-
-            double result2 = Try(() => (double)(numerator / denominator * multiplier))
-                .Catch<DivideByZeroException>(ex => numerator < 0, ex => double.NegativeInfinity)
-                .Catch<DivideByZeroException>(ex => double.PositiveInfinity)
-                .Catch(() => double.NaN)
-                .Finally(() => isComplete = true);
+                .Finally(() => isComplete = true).Execute();
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);

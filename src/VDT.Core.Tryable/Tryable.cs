@@ -3,11 +3,7 @@
 namespace VDT.Core.Tryable;
 
 public class Tryable<TValue> : TryableBase<TValue, Action, Tryable<TValue>> {
-    public static implicit operator TValue(Tryable<TValue> tryable) => tryable.Execute();
-
-    public Tryable(Func<TValue> function) : base(function) {
-        Function = function;
-    }
+    public Tryable(Func<TValue> function) : base(function) { }
 
     public override TValue Execute() {
         try {

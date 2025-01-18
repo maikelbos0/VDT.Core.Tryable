@@ -1,4 +1,5 @@
 ﻿using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using System;
 using Xunit;
 
@@ -18,7 +19,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        int result = subject;
+        var result = subject.Execute();
 
         Assert.Equal(5, result);
 
@@ -30,7 +31,7 @@ public class TryableTests {
     public void ThrowsOnErrorWithoutErrorHandlers() {
         var subject = new Tryable<int>(() => throw new Exception());
 
-        Assert.Throws<Exception>(() => (int)subject);
+        Assert.Throws<Exception>(() => subject.Execute());
     }
 
     [Fact]
@@ -43,7 +44,7 @@ public class TryableTests {
             }
         };
 
-        Assert.Throws<Exception>(() => (int)subject);
+        Assert.Throws<Exception>(() => subject.Execute());
     }
 
     [Fact]
@@ -55,7 +56,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        int result = subject;
+        var result = subject.Execute();
 
         Assert.Equal(10, result);
     }
@@ -75,7 +76,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        int result = subject;
+        var result = subject.Execute();
 
         Assert.Equal(10, result);
 
@@ -103,7 +104,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        int result = subject;
+        var result = subject.Execute();
 
         Assert.Equal(7, result);
 
@@ -121,7 +122,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        int result = subject;
+        var result = subject.Execute();
 
         completeHandler.Received().Invoke();
     }
@@ -134,7 +135,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        Assert.Throws<Exception>(() => (int)subject);
+        Assert.Throws<Exception>(() => subject.Execute());
 
         completeHandler.Received().Invoke();
     }
