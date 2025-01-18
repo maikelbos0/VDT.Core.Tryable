@@ -5,7 +5,7 @@ using Xunit;
 namespace VDT.Core.Tryable.Tests;
 
 public class TryableBaseTests {
-    public class TestTryable : TryableBase<int, Action, TestTryable> {
+    public class TestTryable : TryableBase<int, Action> {
         public TestTryable() : base(() => throw new NotImplementedException()) { }
 
         public override int Execute() => throw new NotImplementedException();

@@ -2,7 +2,7 @@
 
 namespace VDT.Core.Tryable;
 
-public class Tryable<TValue> : TryableBase<TValue, Action, Tryable<TValue>> {
+public class Tryable<TValue> : TryableBase<TValue, Action> {
     public Tryable(Func<TValue> function) : base(function) { }
 
     public override TValue Execute() {
