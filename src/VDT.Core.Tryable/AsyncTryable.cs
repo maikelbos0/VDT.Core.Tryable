@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace VDT.Core.Tryable;
@@ -32,6 +31,4 @@ public class AsyncTryable<TValue> : TryableBase<Task<TValue>, Func<Task>, AsyncT
             }
         }
     }
-
-    public TaskAwaiter<TValue> GetAwaiter() => Execute().GetAwaiter();
 }
