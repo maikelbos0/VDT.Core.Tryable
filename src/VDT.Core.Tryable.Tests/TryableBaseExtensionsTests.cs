@@ -2,9 +2,9 @@
 
 namespace VDT.Core.Tryable.Tests;
 
-public class TryableExtensionsTests {
+public class TryableBaseExtensionsTests {
     [Fact]
-    public void Execute() {
+    public void ExecuteVoidTryable() {
         var subject = new Tryable<Void, int>(_ => 5);
 
         var result = subject.Execute();
