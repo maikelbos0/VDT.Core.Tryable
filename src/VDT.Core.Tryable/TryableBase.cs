@@ -33,5 +33,5 @@ public abstract class TryableBase<TIn, TOut, TFinally> {
         return this;
     }
 
-    public abstract TOut Execute();
+    public abstract TOut Execute(TIn value);
 }

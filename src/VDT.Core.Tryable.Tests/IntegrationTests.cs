@@ -20,7 +20,7 @@ public class IntegrationTests {
                 .Catch<DivideByZeroException>(ex => double.PositiveInfinity)
                 .Catch(() => double.NaN)
                 .Finally(() => isComplete = true)
-                .Execute();
+                .Execute(Void.Instance);
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);
@@ -44,7 +44,7 @@ public class IntegrationTests {
                     isComplete = true;
                     return Task.CompletedTask;
                 })
-                .Execute();
+                .Execute(Void.Instance);
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);

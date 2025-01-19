@@ -6,7 +6,7 @@ namespace VDT.Core.Tryable;
 public class AsyncTryable<TOut> : TryableBase<Void, Task<TOut>, Func<Task>> {
     public AsyncTryable(Func<Task<TOut>> function) : base(function) { }
 
-    public override async Task<TOut> Execute() {
+    public override async Task<TOut> Execute(Void value) {
         try {
             return await Function();
         }

@@ -1,6 +1,5 @@
-﻿using NSubstitute;
-using NSubstitute.ExceptionExtensions;
-using System;
+﻿using System;
+using NSubstitute;
 using Xunit;
 
 namespace VDT.Core.Tryable.Tests;
@@ -19,7 +18,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Execute();
+        var result = subject.Execute(Void.Instance);
 
         Assert.Equal(5, result);
 
@@ -31,7 +30,7 @@ public class TryableTests {
     public void ThrowsOnErrorWithoutErrorHandlers() {
         var subject = new Tryable<int>(() => throw new Exception());
 
-        Assert.Throws<Exception>(() => subject.Execute());
+        Assert.Throws<Exception>(() => subject.Execute(Void.Instance));
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class TryableTests {
             }
         };
 
-        Assert.Throws<Exception>(() => subject.Execute());
+        Assert.Throws<Exception>(() => subject.Execute(Void.Instance));
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Execute();
+        var result = subject.Execute(Void.Instance);
 
         Assert.Equal(10, result);
     }
@@ -76,7 +75,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Execute();
+        var result = subject.Execute(Void.Instance);
 
         Assert.Equal(10, result);
 
@@ -104,7 +103,7 @@ public class TryableTests {
             DefaultErrorHandler = defaultErrorHandler
         };
 
-        var result = subject.Execute();
+        var result = subject.Execute(Void.Instance);
 
         Assert.Equal(7, result);
 
@@ -122,7 +121,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        var result = subject.Execute();
+        var result = subject.Execute(Void.Instance);
 
         completeHandler.Received().Invoke();
     }
@@ -135,7 +134,7 @@ public class TryableTests {
             CompleteHandler = completeHandler
         };
 
-        Assert.Throws<Exception>(() => subject.Execute());
+        Assert.Throws<Exception>(() => subject.Execute(Void.Instance));
 
         completeHandler.Received().Invoke();
     }

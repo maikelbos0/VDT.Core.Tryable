@@ -5,7 +5,7 @@ namespace VDT.Core.Tryable;
 public class Tryable<TOut> : TryableBase<Void, TOut, Action> {
     public Tryable(Func<TOut> function) : base(function) { }
 
-    public override TOut Execute() {
+    public override TOut Execute(Void value) {
         try {
             return Function();
         }

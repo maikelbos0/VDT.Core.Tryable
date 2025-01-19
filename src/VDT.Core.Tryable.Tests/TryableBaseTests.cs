@@ -1,5 +1,5 @@
-﻿using NSubstitute;
-using System;
+﻿using System;
+using NSubstitute;
 using Xunit;
 
 namespace VDT.Core.Tryable.Tests;
@@ -8,7 +8,7 @@ public class TryableBaseTests {
     public class TestTryable : TryableBase<Void, int, Action> {
         public TestTryable() : base(() => throw new NotImplementedException()) { }
 
-        public override int Execute() => throw new NotImplementedException();
+        public override int Execute(Void value) => throw new NotImplementedException();
     }
 
     [Fact]
