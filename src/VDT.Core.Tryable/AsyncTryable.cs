@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace VDT.Core.Tryable;
 
-public class AsyncTryable<TOut> : TryableBase<Void, Task<TOut>, Func<Task>> {
-    public AsyncTryable(Func<Task<TOut>> function) : base(value => function()) { }
+public class AsyncTryable<TIn, TOut> : TryableBase<TIn, Task<TOut>, Func<Task>> {
+    public AsyncTryable(Func<TIn, Task<TOut>> function) : base(function) { }
 
-    public override async Task<TOut> Execute(Void value) {
+    public override async Task<TOut> Execute(TIn value) {
         try {
             return await Function(value);
         }
