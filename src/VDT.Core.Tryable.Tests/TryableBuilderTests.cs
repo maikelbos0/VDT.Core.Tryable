@@ -32,10 +32,22 @@ public class TryableBuilderTests {
 
     [Fact]
     public void TryCreatesAsyncTryable() {
+        var function = Substitute.For<Func<int, Task<int>>>();
+        var result = Try(function);
+
+        Assert.IsType<AsyncTryable<int, int>>(result);
+
+        result.Function(5);
+
+        function.Received().Invoke(5);
+    }
+
+    [Fact]
+    public void TryCreatesVoidAsyncTryable() {
         var function = Substitute.For<Func<Task<int>>>();
         var result = Try(function);
 
-        Assert.IsType<AsyncTryable<int>>(result);
+        Assert.IsType<AsyncTryable<Void, int>>(result);
 
         result.Function(Void.Instance);
 
