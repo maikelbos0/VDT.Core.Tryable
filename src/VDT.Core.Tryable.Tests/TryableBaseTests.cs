@@ -6,7 +6,7 @@ namespace VDT.Core.Tryable.Tests;
 
 public class TryableBaseTests {
     public class TestTryable : TryableBase<Void, int, Action> {
-        public TestTryable() : base(() => throw new NotImplementedException()) { }
+        public TestTryable() : base(_ => throw new NotImplementedException()) { }
 
         public override int Execute(Void value) => throw new NotImplementedException();
     }

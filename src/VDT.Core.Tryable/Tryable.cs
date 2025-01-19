@@ -2,12 +2,12 @@
 
 namespace VDT.Core.Tryable;
 
-public class Tryable<TOut> : TryableBase<Void, TOut, Action> {
-    public Tryable(Func<TOut> function) : base(function) { }
+public class Tryable<TIn, TOut> : TryableBase<TIn, TOut, Action> {
+    public Tryable(Func<TIn, TOut> function) : base(function) { }
 
-    public override TOut Execute(Void value) {
+    public override TOut Execute(TIn value) {
         try {
-            return Function();
+            return Function(value);
         }
         catch (Exception ex) {
             foreach (var errorHandler in ErrorHandlers) {

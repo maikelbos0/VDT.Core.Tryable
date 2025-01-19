@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 namespace VDT.Core.Tryable;
 
 public class AsyncTryable<TOut> : TryableBase<Void, Task<TOut>, Func<Task>> {
-    public AsyncTryable(Func<Task<TOut>> function) : base(function) { }
+    public AsyncTryable(Func<Task<TOut>> function) : base(value => function()) { }
 
     public override async Task<TOut> Execute(Void value) {
         try {
-            return await Function();
+            return await Function(value);
         }
         catch (Exception ex) {
             foreach (var errorHandler in ErrorHandlers) {
