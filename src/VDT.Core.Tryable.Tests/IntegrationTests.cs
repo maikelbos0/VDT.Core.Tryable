@@ -15,12 +15,33 @@ public class IntegrationTests {
         checked {
             var isComplete = false;
 
-            var result = Try((Void _) => (double)(numerator / denominator * multiplier))
+            var result = Try(((int Numerator, int Denominator, int Multiplier) value) => (double)(value.Numerator / value.Denominator * value.Multiplier))
                 .Catch<DivideByZeroException>(ex => numerator < 0, ex => double.NegativeInfinity)
                 .Catch<DivideByZeroException>(ex => double.PositiveInfinity)
                 .Catch(() => double.NaN)
                 .Finally(() => isComplete = true)
-                .Execute(Void.Instance);
+                .Execute((numerator, denominator, multiplier));
+
+            Assert.Equal(expectedResult, result);
+            Assert.True(isComplete);
+        }
+    }
+
+    [Theory]
+    [InlineData(10, 2, 10, 50)]
+    [InlineData(10, 0, 1, double.PositiveInfinity)]
+    [InlineData(-10, 0, 1, double.NegativeInfinity)]
+    [InlineData(1000000, 1, 1000000, double.NaN)]
+    public void VoidTryable(int numerator, int denominator, int multiplier, double expectedResult) {
+        checked {
+            var isComplete = false;
+
+            var result = Try(() => (double)(numerator / denominator * multiplier))
+                .Catch<DivideByZeroException>(ex => numerator < 0, ex => double.NegativeInfinity)
+                .Catch<DivideByZeroException>(ex => double.PositiveInfinity)
+                .Catch(() => double.NaN)
+                .Finally(() => isComplete = true)
+                .Execute();
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);
@@ -33,6 +54,30 @@ public class IntegrationTests {
     [InlineData(-10, 0, 1, double.NegativeInfinity)]
     [InlineData(1000000, 1, 1000000, double.NaN)]
     public async Task AsyncTryable(int numerator, int denominator, int multiplier, double expectedResult) {
+        checked {
+            var isComplete = false;
+
+            var result = await Try(((int Numerator, int Denominator, int Multiplier) value) => Task.FromResult((double)(value.Numerator / value.Denominator * value.Multiplier)))
+                .Catch<DivideByZeroException>(ex => numerator < 0, ex => Task.FromResult(double.NegativeInfinity))
+                .Catch<DivideByZeroException>(ex => Task.FromResult(double.PositiveInfinity))
+                .Catch(() => Task.FromResult(double.NaN))
+                .Finally(() => {
+                    isComplete = true;
+                    return Task.CompletedTask;
+                })
+                .Execute((numerator, denominator, multiplier));
+
+            Assert.Equal(expectedResult, result);
+            Assert.True(isComplete);
+        }
+    }
+
+    [Theory]
+    [InlineData(10, 2, 10, 50)]
+    [InlineData(10, 0, 1, double.PositiveInfinity)]
+    [InlineData(-10, 0, 1, double.NegativeInfinity)]
+    [InlineData(1000000, 1, 1000000, double.NaN)]
+    public async Task VoidAsyncTryable(int numerator, int denominator, int multiplier, double expectedResult) {
         checked {
             var isComplete = false;
 
