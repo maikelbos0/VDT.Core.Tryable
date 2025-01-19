@@ -13,7 +13,21 @@ public class TryableBuilderTests {
         var result = Try(function);
 
         Assert.IsType<Tryable<int, int>>(result);
-        Assert.Equal(function, result.Function);
+
+        result.Function(5);
+
+        function.Received().Invoke(5);
+    }
+    [Fact]
+    public void TryCreatesVoidTryable() {
+        var function = Substitute.For<Func<int>>();
+        var result = Try(function);
+
+        Assert.IsType<Tryable<Void, int>>(result);
+
+        result.Function(Void.Instance);
+
+        function.Received().Invoke();
     }
 
     [Fact]
@@ -22,6 +36,9 @@ public class TryableBuilderTests {
         var result = Try(function);
 
         Assert.IsType<AsyncTryable<int>>(result);
-        //Assert.Equal(function, result.Function);
+
+        result.Function(Void.Instance);
+
+        function.Received().Invoke();
     }
 }
