@@ -13,13 +13,25 @@ public abstract class TryableBase<TIn, TOut, TFinally> {
         Function = function;
     }
 
-    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, TOut> handler) where TException : Exception {
-        ErrorHandlers.Add(new ErrorHandler<TException, TIn, TOut>((TException exception, TIn _) => handler(exception)));
+    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, TOut> handler) where TException : Exception
+        => Catch((TException exception, TIn _) => handler(exception));
+
+    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, TIn, TOut> handler) where TException : Exception {
+        ErrorHandlers.Add(new ErrorHandler<TException, TIn, TOut>(handler));
         return this;
     }
 
-    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, bool> filter, Func<TException, TOut> handler) where TException : Exception {
-        ErrorHandlers.Add(new ErrorHandler<TException, TIn, TOut>((TException exception, TIn _) => filter(exception), (TException exception, TIn _) => handler(exception)));
+    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, bool> filter, Func<TException, TOut> handler) where TException : Exception
+        => Catch((TException exception, TIn _) => filter(exception), (TException exception, TIn _) => handler(exception));
+
+    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, TIn, bool> filter, Func<TException, TOut> handler) where TException : Exception
+        => Catch(filter, (TException exception, TIn _) => handler(exception));
+
+    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, bool> filter, Func<TException, TIn, TOut> handler) where TException : Exception
+        => Catch((TException exception, TIn _) => filter(exception), handler);
+
+    public TryableBase<TIn, TOut, TFinally> Catch<TException>(Func<TException, TIn, bool> filter, Func<TException, TIn, TOut> handler) where TException : Exception {
+        ErrorHandlers.Add(new ErrorHandler<TException, TIn, TOut>(filter, handler));
         return this;
     }
 

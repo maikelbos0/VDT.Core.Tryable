@@ -1,5 +1,5 @@
-﻿using System;
-using NSubstitute;
+﻿using NSubstitute;
+using System;
 using Xunit;
 
 namespace VDT.Core.Tryable.Tests;
@@ -12,7 +12,7 @@ public class TryableBaseTests {
     }
 
     [Fact]
-    public void CatchAddsErrorHandlerWithoutFilter() {
+    public void CatchAddsErrorHandlerWithoutInValueWithoutFilter() {
         var handler = Substitute.For<Func<InvalidOperationException, int>>();
         var subject = new TestTryable() {
             ErrorHandlers = {
@@ -34,7 +34,29 @@ public class TryableBaseTests {
     }
 
     [Fact]
-    public void CatchAddsErrorHandlerWithFilter() {
+    public void CatchAddsErrorHandlerWithInValueWithoutFilter() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, int>>();
+        var subject = new TestTryable() {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, int>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, int>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.Null(errorHandler.Filter);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandlerWithoutInValueWithFilterWithoutInValue() {
         var handler = Substitute.For<Func<InvalidOperationException, int>>();
         var filter = Substitute.For<Func<InvalidOperationException, bool>>();
         var subject = new TestTryable() {
@@ -53,8 +75,84 @@ public class TryableBaseTests {
         errorHandler.Handler.Invoke(exception, Void.Instance);
         handler.Received().Invoke(exception);
 
+        Assert.NotNull(errorHandler.Filter);
         errorHandler.Filter.Invoke(exception, Void.Instance);
         filter.Received().Invoke(exception);
+    }
+    
+    [Fact]
+    public void CatchAddsErrorHandlerWithoutInValueWithFilterWithInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, int>>();
+        var filter = Substitute.For<Func<InvalidOperationException, Void, bool>>();
+        var subject = new TestTryable() {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, int>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, int>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception, Void.Instance);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandlerWithInValueWithFilterWithoutInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, int>>();
+        var filter = Substitute.For<Func<InvalidOperationException, bool>>();
+        var subject = new TestTryable() {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, int>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, int>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandleWithInValuerWithFilterWithInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, int>>();
+        var filter = Substitute.For<Func<InvalidOperationException, Void, bool>>();
+        var subject = new TestTryable() {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, int>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, int>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception, Void.Instance);
     }
 
     [Fact]
