@@ -9,8 +9,8 @@ public class TryableTests {
     public void ReturnsFunctionValueOnSuccess() {
         var errorHandler = Substitute.For<IErrorHandler<int, int>>();
         errorHandler.Handle(Arg.Any<Exception>(), Arg.Any<int>()).Returns(new ErrorHandlerResult<int>(true, 7));
-        var defaultErrorHandler = Substitute.For<Func<int>>();
-        defaultErrorHandler.Invoke().Returns(10);
+        var defaultErrorHandler = Substitute.For<Func<int, int>>();
+        defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
         var subject = new Tryable<int, int>(n => n * 2) {
             ErrorHandlers = {
                 errorHandler
@@ -23,7 +23,7 @@ public class TryableTests {
         Assert.Equal(10, result);
 
         errorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default!);
-        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke();
+        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
     }
 
     [Fact]
@@ -48,8 +48,8 @@ public class TryableTests {
 
     [Fact]
     public void UsesDefaultErrorHandlerOnErrorWithoutErrorHandlers() {
-        var defaultErrorHandler = Substitute.For<Func<int>>();
-        defaultErrorHandler.Invoke().Returns(10);
+        var defaultErrorHandler = Substitute.For<Func<int, int>>();
+        defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
 
         var subject = new Tryable<int, int>(_ => throw new Exception()) {
             DefaultErrorHandler = defaultErrorHandler
@@ -57,7 +57,7 @@ public class TryableTests {
 
         var result = subject.Execute(5);
 
-        Assert.Equal(10, result);
+        Assert.Equal(15, result);
     }
 
     [Fact]
@@ -65,8 +65,8 @@ public class TryableTests {
         var exception = new Exception();
         var skippedErrorHandler = Substitute.For<IErrorHandler<int, int>>();
         skippedErrorHandler.Handle(exception, 5).Returns(new ErrorHandlerResult<int>(false, default));
-        var defaultErrorHandler = Substitute.For<Func<int>>();
-        defaultErrorHandler.Invoke().Returns(10);
+        var defaultErrorHandler = Substitute.For<Func<int, int>>();
+        defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
 
         var subject = new Tryable<int, int>(_ => throw exception) {
             ErrorHandlers = {
@@ -77,10 +77,10 @@ public class TryableTests {
 
         var result = subject.Execute(5);
 
-        Assert.Equal(10, result);
+        Assert.Equal(15, result);
 
         skippedErrorHandler.Received().Handle(exception, 5);
-        defaultErrorHandler.Received().Invoke();
+        defaultErrorHandler.Received().Invoke(5);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class TryableTests {
         usedErrorHandler.Handle(exception, 5).Returns(new ErrorHandlerResult<int>(true, 7));
         var unusedErrorHandler = Substitute.For<IErrorHandler<int, int>>();
         unusedErrorHandler.Handle(Arg.Any<Exception>(), Arg.Any<int>()).Returns(new ErrorHandlerResult<int>(true, 8));
-        var defaultErrorHandler = Substitute.For<Func<int>>();
+        var defaultErrorHandler = Substitute.For<Func<int, int>>();
 
         var subject = new Tryable<int, int>(_ => throw exception) {
             ErrorHandlers = {
@@ -110,7 +110,7 @@ public class TryableTests {
         skippedErrorHandler.Received().Handle(exception, 5);
         usedErrorHandler.Received().Handle(exception, 5);
         unusedErrorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default!);
-        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke();
+        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
     }
 
     [Fact]

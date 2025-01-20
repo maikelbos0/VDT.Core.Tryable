@@ -16,7 +16,7 @@ public class IntegrationTests {
             var isComplete = false;
 
             var result = Try(((int Numerator, int Denominator, int Multiplier) value) => (double)(value.Numerator / value.Denominator * value.Multiplier))
-                .Catch<DivideByZeroException>(ex => numerator < 0, ex => double.NegativeInfinity)
+                .Catch<DivideByZeroException>((ex, value) => value.Numerator < 0, ex => double.NegativeInfinity)
                 .Catch<DivideByZeroException>(ex => double.PositiveInfinity)
                 .Catch(() => double.NaN)
                 .Finally(() => isComplete = true)
@@ -58,7 +58,7 @@ public class IntegrationTests {
             var isComplete = false;
 
             var result = await Try(((int Numerator, int Denominator, int Multiplier) value) => Task.FromResult((double)(value.Numerator / value.Denominator * value.Multiplier)))
-                .Catch<DivideByZeroException>(ex => numerator < 0, ex => Task.FromResult(double.NegativeInfinity))
+                .Catch<DivideByZeroException>((ex, value) => value.Numerator < 0, ex => Task.FromResult(double.NegativeInfinity))
                 .Catch<DivideByZeroException>(ex => Task.FromResult(double.PositiveInfinity))
                 .Catch(() => Task.FromResult(double.NaN))
                 .Finally(() => {

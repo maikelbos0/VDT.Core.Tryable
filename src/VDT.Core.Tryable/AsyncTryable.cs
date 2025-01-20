@@ -20,7 +20,7 @@ public class AsyncTryable<TIn, TOut> : TryableBase<TIn, Task<TOut>, Func<Task>> 
             }
 
             if (DefaultErrorHandler != null) {
-                return await DefaultErrorHandler();
+                return await DefaultErrorHandler(value);
             }
 
             throw;

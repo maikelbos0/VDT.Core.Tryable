@@ -131,7 +131,7 @@ public class TryableBaseTests {
     }
 
     [Fact]
-    public void CatchAddsErrorHandleWithInValuerWithFilterWithInValue() {
+    public void CatchAddsErrorHandleWithInValueWithFilterWithInValue() {
         var handler = Substitute.For<Func<InvalidOperationException, Void, int>>();
         var filter = Substitute.For<Func<InvalidOperationException, Void, bool>>();
         var subject = new TestTryable() {
@@ -156,13 +156,27 @@ public class TryableBaseTests {
     }
 
     [Fact]
-    public void CatchAddsDefaultErrorHandler() {
+    public void CatchAddsDefaultErrorHandlerWithoutInValue() {
         var defaultErrorHandler = Substitute.For<Func<int>>();
         var subject = new TestTryable();
 
         Assert.Equal(subject, subject.Catch(defaultErrorHandler));
 
-        Assert.Equal(defaultErrorHandler, subject.DefaultErrorHandler);
+        Assert.NotNull(subject.DefaultErrorHandler);
+        subject.DefaultErrorHandler.Invoke(Void.Instance);
+        defaultErrorHandler.Received().Invoke();
+    }
+
+    [Fact]
+    public void CatchAddsDefaultErrorHandlerWithInValue() {
+        var defaultErrorHandler = Substitute.For<Func<Void, int>>();
+        var subject = new TestTryable();
+
+        Assert.Equal(subject, subject.Catch(defaultErrorHandler));
+
+        Assert.NotNull(subject.DefaultErrorHandler);
+        subject.DefaultErrorHandler.Invoke(Void.Instance);
+        defaultErrorHandler.Received().Invoke(Void.Instance);
     }
 
     [Fact]

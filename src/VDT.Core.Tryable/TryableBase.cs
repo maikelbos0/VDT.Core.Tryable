@@ -6,7 +6,7 @@ namespace VDT.Core.Tryable;
 public abstract class TryableBase<TIn, TOut, TFinally> {
     public Func<TIn, TOut> Function { get; set; }
     public IList<IErrorHandler<TIn, TOut>> ErrorHandlers { get; set; } = [];
-    public Func<TOut>? DefaultErrorHandler { get; set; }
+    public Func<TIn, TOut>? DefaultErrorHandler { get; set; }
     public TFinally? CompleteHandler { get; set; }
 
     public TryableBase(Func<TIn, TOut> function) {
@@ -35,7 +35,10 @@ public abstract class TryableBase<TIn, TOut, TFinally> {
         return this;
     }
 
-    public TryableBase<TIn, TOut, TFinally> Catch(Func<TOut> defaultErrorHandler) {
+    public TryableBase<TIn, TOut, TFinally> Catch(Func<TOut> defaultErrorHandler)
+        => Catch(value => defaultErrorHandler());
+
+    public TryableBase<TIn, TOut, TFinally> Catch(Func<TIn, TOut> defaultErrorHandler) {
         DefaultErrorHandler = defaultErrorHandler;
         return this;
     }

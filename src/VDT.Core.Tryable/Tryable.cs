@@ -19,7 +19,7 @@ public class Tryable<TIn, TOut> : TryableBase<TIn, TOut, Action> {
             }
 
             if (DefaultErrorHandler != null) {
-                return DefaultErrorHandler();
+                return DefaultErrorHandler(value);
             }
 
             throw;

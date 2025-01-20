@@ -10,8 +10,8 @@ public class AsyncTryableTests {
     public async Task ReturnsFunctionValueOnSuccess() {
         var errorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         errorHandler.Handle(Arg.Any<Exception>(), Arg.Any<int>()).Returns(new ErrorHandlerResult<Task<int>>(true, Task.FromResult(7)));
-        var defaultErrorHandler = Substitute.For<Func<Task<int>>>();
-        defaultErrorHandler.Invoke().Returns(10);
+        var defaultErrorHandler = Substitute.For<Func<int, Task<int>>>();
+        defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
         var subject = new AsyncTryable<int, int>(n => Task.FromResult(n * 2)) {
             ErrorHandlers = {
                 errorHandler
@@ -24,7 +24,7 @@ public class AsyncTryableTests {
         Assert.Equal(10, result);
 
         errorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default!);
-        await defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke();
+        await defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public class AsyncTryableTests {
 
     [Fact]
     public async Task UsesDefaultErrorHandlerOnErrorWithoutErrorHandlers() {
-        var defaultErrorHandler = Substitute.For<Func<Task<int>>>();
-        defaultErrorHandler.Invoke().Returns(10);
+        var defaultErrorHandler = Substitute.For<Func<int, Task<int>>>();
+        defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
 
         var subject = new AsyncTryable<int, int>(_ => throw new Exception()) {
             DefaultErrorHandler = defaultErrorHandler
@@ -58,7 +58,7 @@ public class AsyncTryableTests {
 
         var result = await subject.Execute(5);
 
-        Assert.Equal(10, result);
+        Assert.Equal(15, result);
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public class AsyncTryableTests {
         var exception = new Exception();
         var skippedErrorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         skippedErrorHandler.Handle(exception, 5).Returns(new ErrorHandlerResult<Task<int>>(false, default));
-        var defaultErrorHandler = Substitute.For<Func<Task<int>>>();
-        defaultErrorHandler.Invoke().Returns(10);
+        var defaultErrorHandler = Substitute.For<Func<int, Task<int>>>();
+        defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
 
         var subject = new AsyncTryable<int, int>(_ => throw exception) {
             ErrorHandlers = {
@@ -78,10 +78,10 @@ public class AsyncTryableTests {
 
         var result = await subject.Execute(5);
 
-        Assert.Equal(10, result);
+        Assert.Equal(15, result);
 
         skippedErrorHandler.Received().Handle(exception, 5);
-        await defaultErrorHandler.Received().Invoke();
+        await defaultErrorHandler.Received().Invoke(5);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class AsyncTryableTests {
         usedErrorHandler.Handle(exception, 5).Returns(new ErrorHandlerResult<Task<int>>(true, Task.FromResult(7)));
         var unusedErrorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         unusedErrorHandler.Handle(Arg.Any<Exception>(), Arg.Any<int>()).Returns(new ErrorHandlerResult<Task<int>>(true, Task.FromResult(8)));
-        var defaultErrorHandler = Substitute.For<Func<Task<int>>>();
+        var defaultErrorHandler = Substitute.For<Func<int, Task<int>>>();
 
         var subject = new AsyncTryable<int, int>(_ => throw exception) {
             ErrorHandlers = {
@@ -111,7 +111,7 @@ public class AsyncTryableTests {
         skippedErrorHandler.Received().Handle(exception, 5);
         usedErrorHandler.Received().Handle(exception, 5);
         unusedErrorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default!);
-        await defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke();
+        await defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
     }
 
     [Fact]
