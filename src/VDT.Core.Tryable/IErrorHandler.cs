@@ -2,6 +2,6 @@
 
 namespace VDT.Core.Tryable;
 
-public interface IErrorHandler<TOut> {
-    ErrorHandlerResult<TOut> Handle(Exception ex);
+public interface IErrorHandler<TIn, TOut> {
+    ErrorHandlerResult<TOut> Handle(Exception ex, TIn value);
 }

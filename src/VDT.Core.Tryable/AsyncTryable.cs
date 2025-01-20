@@ -12,7 +12,7 @@ public class AsyncTryable<TIn, TOut> : TryableBase<TIn, Task<TOut>, Func<Task>> 
         }
         catch (Exception ex) {
             foreach (var errorHandler in ErrorHandlers) {
-                var result = errorHandler.Handle(ex);
+                var result = errorHandler.Handle(ex, value);
 
                 if (result.IsHandled) {
                     return await result.Value;

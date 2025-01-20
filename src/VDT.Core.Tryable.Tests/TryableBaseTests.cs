@@ -8,7 +8,7 @@ public class TryableBaseTests {
     public class TestTryable : TryableBase<Void, int, Action> {
         public TestTryable() : base(_ => throw new NotImplementedException()) { }
 
-        public override int Execute(Void value) => throw new NotImplementedException();
+        public override int Execute(Void _) => throw new NotImplementedException();
     }
 
     [Fact]
@@ -16,7 +16,7 @@ public class TryableBaseTests {
         var handler = Substitute.For<Func<InvalidOperationException, int>>();
         var subject = new TestTryable() {
             ErrorHandlers = {
-                Substitute.For<IErrorHandler<int>>()
+                Substitute.For<IErrorHandler<Void, int>>()
             }
         };
 
@@ -24,8 +24,12 @@ public class TryableBaseTests {
 
         Assert.Equal(2, subject.ErrorHandlers.Count);
 
-        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, int>>(subject.ErrorHandlers[1]);
-        Assert.Equal(handler, errorHandler.Handler);
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, int>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
         Assert.Null(errorHandler.Filter);
     }
 
@@ -35,7 +39,7 @@ public class TryableBaseTests {
         var filter = Substitute.For<Func<InvalidOperationException, bool>>();
         var subject = new TestTryable() {
             ErrorHandlers = {
-                Substitute.For<IErrorHandler<int>>()
+                Substitute.For<IErrorHandler<Void, int>>()
             }
         };
 
@@ -43,9 +47,14 @@ public class TryableBaseTests {
 
         Assert.Equal(2, subject.ErrorHandlers.Count);
 
-        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, int>>(subject.ErrorHandlers[1]);
-        Assert.Equal(handler, errorHandler.Handler);
-        Assert.Equal(filter, errorHandler.Filter);
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, int>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception);
     }
 
     [Fact]

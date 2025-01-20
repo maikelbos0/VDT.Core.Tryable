@@ -11,7 +11,7 @@ public class Tryable<TIn, TOut> : TryableBase<TIn, TOut, Action> {
         }
         catch (Exception ex) {
             foreach (var errorHandler in ErrorHandlers) {
-                var result = errorHandler.Handle(ex);
+                var result = errorHandler.Handle(ex, value);
 
                 if (result.IsHandled) {
                     return result.Value;
