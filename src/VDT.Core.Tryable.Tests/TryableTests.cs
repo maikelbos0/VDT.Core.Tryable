@@ -22,8 +22,8 @@ public class TryableTests {
 
         Assert.Equal(10, result);
 
-        errorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default!);
-        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
+        errorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default);
+        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
     [Fact]
@@ -109,8 +109,8 @@ public class TryableTests {
 
         skippedErrorHandler.Received().Handle(exception, 5);
         usedErrorHandler.Received().Handle(exception, 5);
-        unusedErrorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default!);
-        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default!);
+        unusedErrorHandler.DidNotReceiveWithAnyArgs().Handle(default!, default);
+        defaultErrorHandler.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
     [Fact]
