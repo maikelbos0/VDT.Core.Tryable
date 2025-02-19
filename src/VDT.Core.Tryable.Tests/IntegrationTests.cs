@@ -61,7 +61,7 @@ public class IntegrationTests {
                 .Catch<DivideByZeroException>((ex, value) => value.Numerator < 0, ex => Task.FromResult(double.NegativeInfinity))
                 .Catch<DivideByZeroException>(ex => Task.FromResult(double.PositiveInfinity))
                 .Catch(() => Task.FromResult(double.NaN))
-                .Finally(() => {
+                .Finally(_ => {
                     isComplete = true;
                     return Task.CompletedTask;
                 })
@@ -85,11 +85,11 @@ public class IntegrationTests {
                 .Catch<DivideByZeroException>(ex => numerator < 0, ex => Task.FromResult(double.NegativeInfinity))
                 .Catch<DivideByZeroException>(ex => Task.FromResult(double.PositiveInfinity))
                 .Catch(() => Task.FromResult(double.NaN))
-                .Finally(() => {
+                .Finally(_ => {
                     isComplete = true;
                     return Task.CompletedTask;
                 })
-                .Execute(Void.Instance);
+                .Execute();
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);

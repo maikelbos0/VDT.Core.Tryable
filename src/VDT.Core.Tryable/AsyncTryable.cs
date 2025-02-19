@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace VDT.Core.Tryable;
 
-public class AsyncTryable<TIn, TOut> : TryableBase<TIn, Task<TOut>, Func<Task>> {
+public class AsyncTryable<TIn, TOut> : TryableBase<TIn, Task<TOut>, Func<TIn, Task>> {
     public AsyncTryable(Func<TIn, Task<TOut>> function) : base(function) { }
 
     public override async Task<TOut> Execute(TIn value) {
@@ -27,7 +27,7 @@ public class AsyncTryable<TIn, TOut> : TryableBase<TIn, Task<TOut>, Func<Task>> 
         }
         finally {
             if (CompleteHandler != null) {
-                await CompleteHandler.Invoke();
+                await CompleteHandler.Invoke(value);
             }
         }
     }
