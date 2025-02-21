@@ -6,8 +6,187 @@ using Xunit;
 namespace VDT.Core.Tryable.Tests;
 
 public class AsyncTryableTests {
+
     [Fact]
-    public async Task ReturnsFunctionValueOnSuccess() {
+    public void CatchAddsErrorHandlerWithoutInValueWithoutFilter() {
+        var handler = Substitute.For<Func<InvalidOperationException, Task<int>>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task<int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
+        Assert.Null(errorHandler.Filter);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandlerWithInValueWithoutFilter() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, Task<int>>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task<int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.Null(errorHandler.Filter);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandlerWithoutInValueWithFilterWithoutInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, Task<int>>>();
+        var filter = Substitute.For<Func<InvalidOperationException, bool>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task <int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandlerWithoutInValueWithFilterWithInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, Task<int>>>();
+        var filter = Substitute.For<Func<InvalidOperationException, Void, bool>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task <int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception, Void.Instance);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandlerWithInValueWithFilterWithoutInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, Task<int>>>();
+        var filter = Substitute.For<Func<InvalidOperationException, bool>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task <int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception);
+    }
+
+    [Fact]
+    public void CatchAddsErrorHandleWithInValueWithFilterWithInValue() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, Task<int>>>();
+        var filter = Substitute.For<Func<InvalidOperationException, Void, bool>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task<int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(filter, handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.NotNull(errorHandler.Filter);
+        errorHandler.Filter.Invoke(exception, Void.Instance);
+        filter.Received().Invoke(exception, Void.Instance);
+    }
+
+    [Fact]
+    public void CatchAddsDefaultErrorHandlerWithoutInValue() {
+        var defaultErrorHandler = Substitute.For<Func<Task<int>>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
+
+        Assert.Equal(subject, subject.Catch(defaultErrorHandler));
+
+        Assert.NotNull(subject.DefaultErrorHandler);
+        subject.DefaultErrorHandler.Invoke(Void.Instance);
+        defaultErrorHandler.Received().Invoke();
+    }
+
+    [Fact]
+    public void CatchAddsDefaultErrorHandlerWithInValue() {
+        var defaultErrorHandler = Substitute.For<Func<Void, Task<int>>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
+
+        Assert.Equal(subject, subject.Catch(defaultErrorHandler));
+
+        Assert.NotNull(subject.DefaultErrorHandler);
+        subject.DefaultErrorHandler.Invoke(Void.Instance);
+        defaultErrorHandler.Received().Invoke(Void.Instance);
+    }
+
+    [Fact]
+    public void Finally() {
+        var completeHandler = Substitute.For<Func<Void, Task>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
+
+        Assert.Equal(subject, subject.Finally(completeHandler));
+
+        Assert.Equal(completeHandler, subject.CompleteHandler);
+    }
+
+    [Fact]
+    public async Task ExecuteReturnsFunctionValueOnSuccess() {
         var errorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         errorHandler.Handle(Arg.Any<Exception>(), Arg.Any<int>()).Returns(new ErrorHandlerResult<Task<int>>(true, Task.FromResult(7)));
         var defaultErrorHandler = Substitute.For<Func<int, Task<int>>>();
@@ -28,14 +207,14 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public async Task ThrowsOnErrorWithoutErrorHandlers() {
+    public async Task ExecuteThrowsOnErrorWithoutErrorHandlers() {
         var subject = new AsyncTryable<int, int>(_ => throw new Exception());
 
         await Assert.ThrowsAsync<Exception>(() => subject.Execute(5));
     }
 
     [Fact]
-    public async Task ThrowsOnErrorWithoutMatchingErrorHandlers() {
+    public async Task ExecuteThrowsOnErrorWithoutMatchingErrorHandlers() {
         var skippedErrorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         skippedErrorHandler.Handle(Arg.Any<Exception>(), Arg.Any<int>()).Returns(new ErrorHandlerResult<Task<int>>(false, default));
         var subject = new AsyncTryable<int, int>(_ => throw new Exception()) {
@@ -48,7 +227,7 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public async Task UsesDefaultErrorHandlerOnErrorWithoutErrorHandlers() {
+    public async Task ExecuteUsesDefaultErrorHandlerOnErrorWithoutErrorHandlers() {
         var defaultErrorHandler = Substitute.For<Func<int, Task<int>>>();
         defaultErrorHandler.Invoke(Arg.Any<int>()).Returns(15);
 
@@ -62,7 +241,7 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public async Task UsesDefaultErrorHandlerOnErrorWithoutMatchingErrorHandlers() {
+    public async Task ExecuteUsesDefaultErrorHandlerOnErrorWithoutMatchingErrorHandlers() {
         var exception = new Exception();
         var skippedErrorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         skippedErrorHandler.Handle(exception, 5).Returns(new ErrorHandlerResult<Task<int>>(false, default));
@@ -85,7 +264,7 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public async Task UsesFirstErrorHandlerThatReturnsHandledResultOnError() {
+    public async Task ExecuteUsesFirstErrorHandlerThatReturnsHandledResultOnError() {
         var exception = new Exception();
         var skippedErrorHandler = Substitute.For<IErrorHandler<int, Task<int>>>();
         skippedErrorHandler.Handle(exception, 5).Returns(new ErrorHandlerResult<Task<int>>(false, default));
@@ -115,7 +294,7 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public async Task ExecutesCompleteHandlerOnSucces() {
+    public async Task ExecuteExecutesCompleteHandlerOnSucces() {
         var completeHandler = Substitute.For<Func<int, Task>>();
 
         var subject = new AsyncTryable<int, int>(n => Task.FromResult(n * 2)) {
@@ -128,7 +307,7 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public async Task ExecutesCompleteHandlerOnError() {
+    public async Task ExecuteExecutesCompleteHandlerOnError() {
         var completeHandler = Substitute.For<Func<int, Task>>();
 
         var subject = new AsyncTryable<int, int>(_ => throw new Exception()) {

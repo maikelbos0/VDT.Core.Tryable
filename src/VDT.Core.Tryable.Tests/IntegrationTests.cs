@@ -5,6 +5,7 @@ using static VDT.Core.Tryable.TryableBuilder;
 
 namespace VDT.Core.Tryable.Tests;
 
+// TODO fix
 public class IntegrationTests {
     [Theory]
     [InlineData(10, 2, 10, 50)]
@@ -95,7 +96,7 @@ public class IntegrationTests {
                     isComplete = true;
                     return Task.CompletedTask;
                 })
-                .Execute();
+                .Execute(Void.Instance);
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);
