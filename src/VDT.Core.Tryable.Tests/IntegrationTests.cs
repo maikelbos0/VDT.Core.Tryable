@@ -22,7 +22,6 @@ public class IntegrationTests {
                 .Catch(() => double.NaN)
                 .Finally(_ => {
                     isComplete = true;
-                    return Void.Instance;
                 })
                 .Execute((numerator, denominator, multiplier));
 
@@ -46,9 +45,8 @@ public class IntegrationTests {
                 .Catch(() => double.NaN)
                 .Finally(_ => {
                     isComplete = true;
-                    return Void.Instance;
                 })
-                .Execute();
+                .Execute(Void.Instance);
 
             Assert.Equal(expectedResult, result);
             Assert.True(isComplete);
