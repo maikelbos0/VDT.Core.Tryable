@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VDT.Core.Tryable;
 
-public class Tryable<TIn, TOut> {
+public class Tryable<TIn, TOut> : ITryable<TIn, TOut> {
     public Func<TIn, TOut> Function { get; set; }
     public IList<IErrorHandler<TIn, TOut>> ErrorHandlers { get; set; } = [];
     public Func<TIn, TOut>? DefaultErrorHandler { get; set; }

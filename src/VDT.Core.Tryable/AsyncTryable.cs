@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace VDT.Core.Tryable;
 
-public class AsyncTryable<TIn, TOut> {
+public class AsyncTryable<TIn, TOut> : ITryable<TIn, Task<TOut>> {
     public Func<TIn, Task<TOut>> Function { get; set; }
     public IList<IErrorHandler<TIn, Task<TOut>>> ErrorHandlers { get; set; } = [];
     public Func<TIn, Task<TOut>>? DefaultErrorHandler { get; set; }
