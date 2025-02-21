@@ -152,27 +152,51 @@ public class AsyncTryableTests {
     }
 
     [Fact]
-    public void CatchAddsDefaultErrorHandlerWithoutInValue() {
+    public async Task CatchAddsDefaultErrorHandlerWithoutInValueWithoutReturnTask() {
+        var defaultErrorHandler = Substitute.For<Func<int>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
+
+        Assert.Equal(subject, subject.Catch(defaultErrorHandler));
+
+        Assert.NotNull(subject.DefaultErrorHandler);
+        await subject.DefaultErrorHandler.Invoke(Void.Instance);
+        defaultErrorHandler.Received().Invoke();
+    }
+
+    [Fact]
+    public async Task CatchAddsDefaultErrorHandlerWithInValueWithoutReturnTask() {
+        var defaultErrorHandler = Substitute.For<Func<Void, int>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
+
+        Assert.Equal(subject, subject.Catch(defaultErrorHandler));
+
+        Assert.NotNull(subject.DefaultErrorHandler);
+        await subject.DefaultErrorHandler.Invoke(Void.Instance);
+        defaultErrorHandler.Received().Invoke(Void.Instance);
+    }
+
+    [Fact]
+    public async Task CatchAddsDefaultErrorHandlerWithoutInValueWithReturnTask() {
         var defaultErrorHandler = Substitute.For<Func<Task<int>>>();
         var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
 
         Assert.Equal(subject, subject.Catch(defaultErrorHandler));
 
         Assert.NotNull(subject.DefaultErrorHandler);
-        subject.DefaultErrorHandler.Invoke(Void.Instance);
-        defaultErrorHandler.Received().Invoke();
+        await subject.DefaultErrorHandler.Invoke(Void.Instance);
+        await defaultErrorHandler.Received().Invoke();
     }
 
     [Fact]
-    public void CatchAddsDefaultErrorHandlerWithInValue() {
+    public async Task CatchAddsDefaultErrorHandlerWithInValueWithReturnTask() {
         var defaultErrorHandler = Substitute.For<Func<Void, Task<int>>>();
         var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5));
 
         Assert.Equal(subject, subject.Catch(defaultErrorHandler));
 
         Assert.NotNull(subject.DefaultErrorHandler);
-        subject.DefaultErrorHandler.Invoke(Void.Instance);
-        defaultErrorHandler.Received().Invoke(Void.Instance);
+        await subject.DefaultErrorHandler.Invoke(Void.Instance);
+        await defaultErrorHandler.Received().Invoke(Void.Instance);
     }
 
     [Fact]

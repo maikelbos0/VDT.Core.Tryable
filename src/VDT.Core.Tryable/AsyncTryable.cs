@@ -36,8 +36,14 @@ public class AsyncTryable<TIn, TOut> : ITryable<TIn, Task<TOut>> {
         return this;
     }
 
+    public AsyncTryable<TIn, TOut> Catch(Func<TOut> defaultErrorHandler)
+        => Catch(_ => Task.FromResult(defaultErrorHandler()));
+
+    public AsyncTryable<TIn, TOut> Catch(Func<TIn, TOut> defaultErrorHandler)
+        => Catch(value => Task.FromResult(defaultErrorHandler(value)));
+
     public AsyncTryable<TIn, TOut> Catch(Func<Task<TOut>> defaultErrorHandler)
-        => Catch(value => defaultErrorHandler());
+        => Catch(_ => defaultErrorHandler());
 
     public AsyncTryable<TIn, TOut> Catch(Func<TIn, Task<TOut>> defaultErrorHandler) {
         DefaultErrorHandler = defaultErrorHandler;
