@@ -5,7 +5,7 @@ using Xunit;
 namespace VDT.Core.Tryable.Tests;
 
 public class TryableBaseTests {
-    public class TestTryable : TryableBase<Void, int, Action> {
+    public class TestTryable : TryableBase<Void, int, Void> {
         public TestTryable() : base(_ => throw new NotImplementedException()) { }
 
         public override int Execute(Void _) => throw new NotImplementedException();
@@ -181,7 +181,7 @@ public class TryableBaseTests {
 
     [Fact]
     public void Finally() {
-        var completeHandler = Substitute.For<Action>();
+        var completeHandler = Substitute.For<Func<Void, Void>>();
         var subject = new TestTryable();
 
         Assert.Equal(subject, subject.Finally(completeHandler));

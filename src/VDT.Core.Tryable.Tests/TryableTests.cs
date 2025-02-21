@@ -115,7 +115,7 @@ public class TryableTests {
 
     [Fact]
     public void ExecutesCompleteHandlerOnSucces() {
-        var completeHandler = Substitute.For<Action>();
+        var completeHandler = Substitute.For<Func<int, Void>>();
 
         var subject = new Tryable<int, int>(n => n * 2) {
             CompleteHandler = completeHandler
@@ -123,12 +123,12 @@ public class TryableTests {
 
         var result = subject.Execute(5);
 
-        completeHandler.Received().Invoke();
+        completeHandler.Received().Invoke(5);
     }
 
     [Fact]
     public void ExecutesCompleteHandlerOnError() {
-        var completeHandler = Substitute.For<Action>();
+        var completeHandler = Substitute.For<Func<int, Void>>();
 
         var subject = new Tryable<int, int>(_ => throw new Exception()) {
             CompleteHandler = completeHandler
@@ -136,6 +136,6 @@ public class TryableTests {
 
         Assert.Throws<Exception>(() => subject.Execute(5));
 
-        completeHandler.Received().Invoke();
+        completeHandler.Received().Invoke(5);
     }
 }

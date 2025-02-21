@@ -2,7 +2,7 @@
 
 namespace VDT.Core.Tryable;
 
-public class Tryable<TIn, TOut> : TryableBase<TIn, TOut, Action> {
+public class Tryable<TIn, TOut> : TryableBase<TIn, TOut, Void> {
     public Tryable(Func<TIn, TOut> function) : base(function) { }
 
     public override TOut Execute(TIn value) {
@@ -25,7 +25,7 @@ public class Tryable<TIn, TOut> : TryableBase<TIn, TOut, Action> {
             throw;
         }
         finally {
-            CompleteHandler?.Invoke();
+            CompleteHandler?.Invoke(value);
         }
     }
 }
