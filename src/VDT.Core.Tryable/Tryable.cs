@@ -43,6 +43,9 @@ public class Tryable<TIn, TOut> : ITryable<TIn, TOut> {
         return this;
     }
 
+    public Tryable<TIn, TOut> Finally(Action completeHandler)
+        => Finally(_ => completeHandler());
+
     public Tryable<TIn, TOut> Finally(Action<TIn> completeHandler) {
         CompleteHandler = completeHandler;
         return this;

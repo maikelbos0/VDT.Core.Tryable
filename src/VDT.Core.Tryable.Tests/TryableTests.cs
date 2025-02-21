@@ -175,13 +175,27 @@ public class TryableTests {
     }
 
     [Fact]
-    public void Finally() {
+    public void FinallyWithoutInValue() {
+        var completeHandler = Substitute.For<Action>();
+        var subject = new Tryable<Void, int>(_ => 5);
+
+        Assert.Equal(subject, subject.Finally(completeHandler));
+
+        Assert.NotNull(subject.CompleteHandler);
+        subject.CompleteHandler.Invoke(Void.Instance);
+        completeHandler.Received().Invoke();
+    }
+
+    [Fact]
+    public void FinallyWithInValue() {
         var completeHandler = Substitute.For<Action<Void>>();
         var subject = new Tryable<Void, int>(_ => 5);
 
         Assert.Equal(subject, subject.Finally(completeHandler));
 
-        Assert.Equal(completeHandler, subject.CompleteHandler);
+        Assert.NotNull(subject.CompleteHandler);
+        subject.CompleteHandler.Invoke(Void.Instance);
+        completeHandler.Received().Invoke(Void.Instance);
     }
 
     [Fact]
