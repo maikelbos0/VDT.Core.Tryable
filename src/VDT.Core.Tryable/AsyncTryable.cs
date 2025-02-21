@@ -21,7 +21,7 @@ public class AsyncTryable<TIn, TOut> : ITryable<TIn, Task<TOut>> {
         ErrorHandlers.Add(new ErrorHandler<TException, TIn, Task<TOut>>(handler));
         return this;
     }
-    
+
     public AsyncTryable<TIn, TOut> Catch<TException>(Func<TException, bool> filter, Func<TException, Task<TOut>> handler) where TException : Exception
         => Catch((TException exception, TIn _) => filter(exception), (TException exception, TIn _) => handler(exception));
 
@@ -43,6 +43,21 @@ public class AsyncTryable<TIn, TOut> : ITryable<TIn, Task<TOut>> {
         DefaultErrorHandler = defaultErrorHandler;
         return this;
     }
+
+    public AsyncTryable<TIn, TOut> Finally(Action completeHandler)
+        => Finally(_ => {
+            completeHandler();
+            return Task.CompletedTask;
+        });
+
+    public AsyncTryable<TIn, TOut> Finally(Action<TIn> completeHandler)
+        => Finally(value => {
+            completeHandler(value);
+            return Task.CompletedTask;
+        });
+
+    public AsyncTryable<TIn, TOut> Finally(Func<Task> completeHandler)
+        => Finally(_ => completeHandler());
 
     public AsyncTryable<TIn, TOut> Finally(Func<TIn, Task> completeHandler) {
         CompleteHandler = completeHandler;
