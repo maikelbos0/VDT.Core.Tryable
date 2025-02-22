@@ -7,6 +7,50 @@ namespace VDT.Core.Tryable.Tests;
 
 public class AsyncTryableTests {
     [Fact]
+    public async Task CatchAddsErrorHandlerWithoutInValueWithoutFilterWithoutReturnTask() {
+        var handler = Substitute.For<Func<InvalidOperationException, int>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task<int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        await errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception);
+
+        Assert.Null(errorHandler.Filter);
+    }
+
+    [Fact]
+    public async Task CatchAddsErrorHandlerWithInValueWithoutFilterWithoutReturnTask() {
+        var handler = Substitute.For<Func<InvalidOperationException, Void, int>>();
+        var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {
+            ErrorHandlers = {
+                Substitute.For<IErrorHandler<Void, Task<int>>>()
+            }
+        };
+
+        Assert.Equal(subject, subject.Catch(handler));
+
+        Assert.Equal(2, subject.ErrorHandlers.Count);
+
+        var errorHandler = Assert.IsType<ErrorHandler<InvalidOperationException, Void, Task<int>>>(subject.ErrorHandlers[1]);
+        var exception = new InvalidOperationException();
+
+        await errorHandler.Handler.Invoke(exception, Void.Instance);
+        handler.Received().Invoke(exception, Void.Instance);
+
+        Assert.Null(errorHandler.Filter);
+    }
+
+    [Fact]
     public async Task CatchAddsErrorHandlerWithoutInValueWithoutFilterWithReturnTask() {
         var handler = Substitute.For<Func<InvalidOperationException, Task<int>>>();
         var subject = new AsyncTryable<Void, int>(_ => Task.FromResult(5)) {

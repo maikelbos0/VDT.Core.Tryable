@@ -14,6 +14,12 @@ public class AsyncTryable<TIn, TOut> : ITryable<TIn, Task<TOut>> {
         Function = function;
     }
 
+    public AsyncTryable<TIn, TOut> Catch<TException>(Func<TException, TOut> handler) where TException : Exception
+        => Catch((TException exception, TIn _) => Task.FromResult(handler(exception)));
+
+    public AsyncTryable<TIn, TOut> Catch<TException>(Func<TException, TIn, TOut> handler) where TException : Exception
+        => Catch((TException exception, TIn value) => Task.FromResult(handler(exception, value)));
+
     public AsyncTryable<TIn, TOut> Catch<TException>(Func<TException, Task<TOut>> handler) where TException : Exception
         => Catch((TException exception, TIn _) => handler(exception));
 
